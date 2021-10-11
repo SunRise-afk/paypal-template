@@ -6,8 +6,6 @@ const product = {
     image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/32/IPhone_X_vector.svg/1021px-IPhone_X_vector.svg.png',
 };
 
-const config = process.env;
-
 const Product = () => {
     const [paidFor, setPaidFor] = useState(false);
     const [loaded, setLoaded] = useState(false);
@@ -15,13 +13,10 @@ const Product = () => {
     let paypalRef = useRef();
 
     useEffect(() => {
-        const script = document.createElement('script');
-        script.src = `https://www.paypal.com/sdk/js?client-id=${config.REACT_APP_CLIENT_ID}&currency=${config.REACT_APP_CURRENCY}`;
-        script.addEventListener('load', () => setLoaded(true));
-        document.body.appendChild(script);
-
-        if (loaded) {
-            setTimeout(() => {
+        if(!loaded){
+            setLoaded(true)
+        }
+        if(loaded){
                 window.paypal
                     .Buttons({
                         createOrder: (data, actions) => {
@@ -43,10 +38,8 @@ const Product = () => {
                             console.log(order);
                         }
                     }).render(paypalRef);
-            });
         }
-
-    });
+    },[loaded]);
 
     return <div className="product-container">
         <h2>Try script variant</h2>
